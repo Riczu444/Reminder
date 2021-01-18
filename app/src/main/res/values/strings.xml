@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Reminder</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="sign_in">Sign in</string>
+    <string name="icon">Icon</string>
+</resources>
