@@ -5,4 +5,9 @@
     <string name="login">Login</string>
     <string name="sign_in">Sign in</string>
     <string name="icon">Icon</string>
+    <string name="email">Email</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">Register</string>
+    <string name="account_not_exist_register_here">Account not exist? Register here!</string>
+    <string name="add">add</string>
 </resources>
