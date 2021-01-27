@@ -10,4 +10,6 @@
     <string name="register">Register</string>
     <string name="account_not_exist_register_here">Account not exist? Register here!</string>
     <string name="add">add</string>
+    <string name="user">user</string>
+    <string name="avatar">avatar</string>
 </resources>

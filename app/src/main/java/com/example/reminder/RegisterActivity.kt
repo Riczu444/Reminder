@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 
+
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var  auth: FirebaseAuth
@@ -17,6 +18,7 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_register)
 
         auth = FirebaseAuth.getInstance()
+
 
 
         val btnRegister: Button = findViewById(R.id.btnLogin)
