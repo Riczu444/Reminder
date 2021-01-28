@@ -7,7 +7,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
@@ -16,7 +15,7 @@ import kotlin.collections.ArrayList
 
 class MainPage : AppCompatActivity() {
     var list : ArrayList<String> = ArrayList()
-    var auth = FirebaseAuth.getInstance()
+    var auth = FirebaseAuth.getInstance().currentUser
     var time = ""
     var date = ""
     var remainder_name = ""
@@ -25,7 +24,15 @@ class MainPage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_page)
 
+        val tvUserName : TextView = findViewById(R.id.textView)
         val btnDropDown : ImageButton = findViewById(R.id.btnDropDown)
+        val listView : ListView = findViewById(R.id.listViewReminder)
+        val addButton : Button = findViewById(R.id.btnAdd)
+        val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        list.add("Test 30.1.2021 8.05")
+        list.add("Test 4.7.2021 22.45")
+        arrayAdapter.notifyDataSetChanged()
+        listView.adapter = arrayAdapter
 
         btnDropDown.setOnClickListener {
             val popupMenu: PopupMenu = PopupMenu(this,btnDropDown)
@@ -43,19 +50,13 @@ class MainPage : AppCompatActivity() {
             popupMenu.show()
         }
 
-        auth.addAuthStateListener {
-            if(auth.currentUser == null){
-                this.finish()
-            }
+
+
+
+
+        if(auth != null) {
+            tvUserName.text = auth!!.displayName
         }
-
-
-        val listView : ListView = findViewById(R.id.listViewReminder)
-        val addButton : Button = findViewById(R.id.btnAdd)
-        val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
-
-
-
 
         addButton.setOnClickListener {
 
@@ -101,7 +102,7 @@ class MainPage : AppCompatActivity() {
 
 
     fun signOut(){
-        auth.signOut()
+        FirebaseAuth.getInstance().signOut()
         val logOut = Intent( this, MainActivity::class.java)
         startActivity(logOut)
     }
