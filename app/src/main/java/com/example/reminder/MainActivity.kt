@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         val password: EditText = findViewById(R.id.etPassword)
         val tvRegister: TextView = findViewById(R.id.tvRegister)
 
+        // Log user in if all text areas has been filled
         btnLogin.setOnClickListener{
 
             if(email.text.trim().toString().isNotEmpty() || password.text.trim().toString().isNotEmpty()){
@@ -35,12 +36,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Interactive TextView to start register activity
         tvRegister.setOnClickListener{
             val intent = Intent( this, RegisterActivity::class.java)
             startActivity(intent)
         }
 
     }
+
+
+    // Log user by using email and password
     private fun logInUser(email:String, password:String){
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this){ task ->
@@ -58,6 +63,5 @@ class MainActivity : AppCompatActivity() {
                 }
 
             }
-
     }
 }

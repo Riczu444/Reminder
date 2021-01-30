@@ -24,16 +24,21 @@ class MainPage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_page)
 
+
         val tvUserName : TextView = findViewById(R.id.textView)
         val btnDropDown : ImageButton = findViewById(R.id.btnDropDown)
         val listView : ListView = findViewById(R.id.listViewReminder)
         val addButton : Button = findViewById(R.id.btnAdd)
         val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+
+        // Initialise a few examples of reminders to ListView
         list.add("Test 30.1.2021 8.05")
         list.add("Test 4.7.2021 22.45")
         arrayAdapter.notifyDataSetChanged()
         listView.adapter = arrayAdapter
 
+
+        // Droplist/PopUp menu for Settings and logout choices
         btnDropDown.setOnClickListener {
             val popupMenu: PopupMenu = PopupMenu(this,btnDropDown)
 
@@ -41,7 +46,8 @@ class MainPage : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
                 when(item.itemId) {
                     R.id.settings ->
-                        Toast.makeText(this, "You Clicked : " + item.title, Toast.LENGTH_SHORT).show()
+                        // Toast.makeText(this, "You Clicked : " + item.title, Toast.LENGTH_SHORT).show()
+                        goToSettings()
                     R.id.log_out ->
                         signOut()
                 }
@@ -50,14 +56,12 @@ class MainPage : AppCompatActivity() {
             popupMenu.show()
         }
 
-
-
-
-
+        // If there exist instance of current user, who he/she name set the username to screen
         if(auth != null) {
             tvUserName.text = auth!!.displayName
         }
 
+        // Add new reminder, set title, date and time and the add new item to listView
         addButton.setOnClickListener {
 
             val builder: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -66,16 +70,16 @@ class MainPage : AppCompatActivity() {
             builder.setView(view)
             val etNameReminder: EditText = view.findViewById(R.id.etNameReminder)
 
-            builder.setPositiveButton("Ok", DialogInterface.OnClickListener{dialog, which ->
+            builder.setPositiveButton("Ok", DialogInterface.OnClickListener{ _, _ ->
                 remainder_name = etNameReminder.text.trim().toString()
                 val cal = Calendar.getInstance()
-                val dateSetListener = DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
+                val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
                     cal.set(Calendar.YEAR, year)
                     cal.set(Calendar.MONTH, month)
                     cal.set(Calendar.DAY_OF_MONTH, day)
                     date = SimpleDateFormat("dd.MM.yyyy", Locale.US).format(cal.time).toString()
 
-                    val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+                    val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                         cal.set(Calendar.HOUR_OF_DAY, hour)
                         cal.set(Calendar.MINUTE, minute)
                         time = SimpleDateFormat("HH:mm", Locale.US).format(cal.time).toString()
@@ -89,7 +93,7 @@ class MainPage : AppCompatActivity() {
                 DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
             })
 
-            builder.setNeutralButton("Cancel", DialogInterface.OnClickListener{dialog, which ->
+            builder.setNeutralButton("Cancel", DialogInterface.OnClickListener{ dialog, _ ->
                 dialog.dismiss()
             })
 
@@ -100,10 +104,15 @@ class MainPage : AppCompatActivity() {
     }
 
 
-
-    fun signOut(){
+    // Log out the current user
+    private fun signOut(){
         FirebaseAuth.getInstance().signOut()
         val logOut = Intent( this, MainActivity::class.java)
         startActivity(logOut)
+    }
+
+    private fun goToSettings(){
+        val intent = Intent( this, SettingActivity::class.java)
+        startActivity(intent)
     }
 }
