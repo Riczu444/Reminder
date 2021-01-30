@@ -70,16 +70,16 @@ class MainPage : AppCompatActivity() {
             builder.setView(view)
             val etNameReminder: EditText = view.findViewById(R.id.etNameReminder)
 
-            builder.setPositiveButton("Ok", DialogInterface.OnClickListener{ _, _ ->
+            builder.setPositiveButton("Ok", DialogInterface.OnClickListener{dialog, which->
                 remainder_name = etNameReminder.text.trim().toString()
                 val cal = Calendar.getInstance()
-                val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+                val dateSetListener = DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
                     cal.set(Calendar.YEAR, year)
                     cal.set(Calendar.MONTH, month)
                     cal.set(Calendar.DAY_OF_MONTH, day)
                     date = SimpleDateFormat("dd.MM.yyyy", Locale.US).format(cal.time).toString()
 
-                    val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+                    val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
                         cal.set(Calendar.HOUR_OF_DAY, hour)
                         cal.set(Calendar.MINUTE, minute)
                         time = SimpleDateFormat("HH:mm", Locale.US).format(cal.time).toString()
@@ -93,7 +93,7 @@ class MainPage : AppCompatActivity() {
                 DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
             })
 
-            builder.setNeutralButton("Cancel", DialogInterface.OnClickListener{ dialog, _ ->
+            builder.setNeutralButton("Cancel", DialogInterface.OnClickListener{ dialog, which ->
                 dialog.dismiss()
             })
 

@@ -11,13 +11,13 @@
         android:id="@+id/etUsername"
         android:layout_width="361dp"
         android:layout_height="54dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/username"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintHorizontal_bias="0.54"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
@@ -25,7 +25,7 @@
         android:id="@+id/etEmail"
         android:layout_width="359dp"
         android:layout_height="50dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
         android:autofillHints=""
         android:ems="10"
@@ -33,6 +33,7 @@
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toTopOf="@+id/etUsername"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.557"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvRegisterIn" />
 
@@ -40,7 +41,7 @@
         android:id="@+id/etPassword"
         android:layout_width="357dp"
         android:layout_height="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/password"
@@ -54,7 +55,7 @@
         android:id="@+id/etPassword2"
         android:layout_width="356dp"
         android:layout_height="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/confirm_password"
@@ -68,35 +69,33 @@
         android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/register"
+        android:layout_marginTop="12dp"
         android:backgroundTint="#53dc98"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/register"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword2"
-        app:layout_constraintVertical_bias="0.09" />
+        app:layout_constraintTop_toBottomOf="@+id/etPassword2" />
 
     <TextView
         android:id="@+id/tvRegisterIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/register"
+        android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.099"
+        app:layout_constraintVertical_bias="0.077"
         tools:text="Register" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="167dp"
         android:layout_height="152dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="92dp"
         android:contentDescription="@string/icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -106,15 +105,16 @@
     <TextView
         android:id="@+id/tvRegister"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/account_not_exist_register_here"
         android:textColor="@color/purple_500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.506"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.931"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin"
+        app:layout_constraintVertical_bias="0.357"
         tools:text="Account exist? Login here!" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
