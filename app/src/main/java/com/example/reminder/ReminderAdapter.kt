@@ -12,15 +12,17 @@ import android.widget.TextView
 class ReminderAdapter(context: Context, reminderList: MutableList<Reminder>) : BaseAdapter() {
     private val mInflater: LayoutInflater = LayoutInflater.from(context)
     private var itemList = reminderList
+    private var reminderRowListener:  ReminderRowListener = context as ReminderRowListener
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val message: String = itemList.get(position).message as String
-        val reminder_time: String = itemList.get(position).reminder_time as String
-        //val creation_time: String = itemList.get(position).creation_time as String
-        //val creation_id: String = itemList.get(position).creator_id as String
-        //val location_x: String = itemList.get(position).location_x as String
-        //val location_y: String = itemList.get(position).location_y as String
-        //val reminder_seen: String = itemList.get(position).reminder_seen as String
+        val message: String = itemList[position].message as String
+        val reminder_time: String = itemList[position].reminder_time as String
+        val object_id: String = itemList[position].object_id as String
+        //val creation_time: String = itemList[position].creation_time as String
+        //val creation_id: String = itemList[position].creator_id as String
+        //val location_x: String = itemList[position].location_x as String
+        //val location_y: String = itemList[position].location_y as String
+        //val reminder_seen: String = itemList[position].reminder_seen as String
 
         val view: View
         val listRowHolder: ListRowHolder
@@ -35,9 +37,13 @@ class ReminderAdapter(context: Context, reminderList: MutableList<Reminder>) : B
         listRowHolder.reminder_name.text= message
         listRowHolder.reminder_time.text= reminder_time
 
-        """istRowHolder.deleteButton.setOnClickListener{
-            this.rowListener.onItemDelete(objectId)
-        }"""
+        listRowHolder.ibDeleteObject.setOnClickListener{
+            this.reminderRowListener.onItemDelete(object_id)
+        }
+
+        listRowHolder.ibEditObject.setOnClickListener{
+            this.reminderRowListener.modifyReminder(object_id)
+        }
 
         return view
     }
