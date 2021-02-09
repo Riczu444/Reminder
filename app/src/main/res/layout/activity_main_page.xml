@@ -53,6 +53,7 @@
         android:id="@+id/listViewReminder"
         android:layout_width="348dp"
         android:layout_height="528dp"
+        android:background="#9484EAAC"
         android:listSelector="#CBF4B4EE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
