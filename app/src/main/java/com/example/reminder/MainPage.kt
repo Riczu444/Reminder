@@ -1,5 +1,6 @@
 package com.example.reminder
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -74,6 +75,7 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
     }
 
 
+    @SuppressLint("SimpleDateFormat")
     private fun setReminder(){
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Give a name for reminder")
@@ -100,6 +102,9 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
                     reminderItem.message = remainderName
                     reminderItem.reminder_time = date.plus(" ").plus(time)
                     reminderItem.creator_id = auth!!.uid
+                    val sdf = SimpleDateFormat("dd.M.yyyy hh:mm")
+                    val currentDate = sdf.format(Date())
+                    reminderItem.creation_time = currentDate
                     val newItem = this.databaseReference.child(Constants.FIREBASE_ITEM).push()
                     reminderItem.object_id = newItem.key
                     newItem.setValue(reminderItem)
@@ -236,7 +241,7 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
     }
 
     private fun getDatabaseReference(itemObjectId: String): DatabaseReference {
-        // Add listener for items changed or removed after to do list is created
+        // Add listener for items changed or removed after reminder list is created
         this.databaseReference.orderByKey().addListenerForSingleValueEvent(this.itemListener)
         return this.databaseReference.child(Constants.FIREBASE_ITEM).child(itemObjectId)
     }

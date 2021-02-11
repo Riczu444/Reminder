@@ -13,37 +13,48 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginEnd="9dp"
-        android:layout_marginRight="9dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:background="@android:color/transparent"
         android:gravity="end"
+        android:tint="#DC7B8D"
         app:srcCompat="@android:drawable/btn_dialog" />
 
     <ImageButton
         android:id="@+id/ib_edit_reminder"
-        android:layout_width="36dp"
+        android:layout_width="34dp"
         android:layout_height="34dp"
-        android:layout_marginEnd="21dp"
-        android:layout_toStartOf="@+id/ib_remove_reminder"
+        android:layout_below="@+id/ib_remove_reminder"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="12dp"
+        android:backgroundTint="#E3E0A8"
+        android:tint="#000000"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <TextView
         android:id="@+id/tv_reminder_date"
-        android:layout_width="wrap_content"
-        android:layout_height="34dp"
-        android:layout_marginEnd="26dp"
+        android:layout_width="138dp"
+        android:layout_height="43dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="22dp"
         android:layout_toStartOf="@+id/ib_edit_reminder"
+        android:gravity="center"
         android:text="Reminder date"
-        android:textSize="18sp" />
+        android:textColor="@color/black"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tv_reminder_name"
-        android:layout_width="132dp"
-        android:layout_height="34dp"
+        android:layout_width="171dp"
+        android:layout_height="87dp"
         android:layout_marginEnd="15dp"
+        android:gravity="center"
         android:layout_toStartOf="@+id/tv_reminder_date"
         android:text="Reminder name"
-        android:textSize="18sp" />
+        android:textColor="@color/black"
+        android:textSize="16sp" />
 
 
 </RelativeLayout>

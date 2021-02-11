@@ -1,5 +1,7 @@
 package com.example.reminder
 
+
+// Class for Reminder, which is used to storage several information for user, notification etc.
 class Reminder {
     companion object Factory {
         fun create(): Reminder = Reminder()
