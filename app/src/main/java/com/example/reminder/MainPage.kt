@@ -126,6 +126,7 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
 
     }
 
+    // Modify reminder and update modification to firebase and user view
     override fun modifyReminder(itemObjectId: String) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Give a name for reminder")
