@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +14,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.work.*
+import java.util.concurrent.TimeUnit
+
 
 class MainPage : AppCompatActivity(), ReminderRowListener {
 
@@ -25,9 +27,8 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
 
     private lateinit var databaseReference: DatabaseReference
     private var reminderList: MutableList<Reminder>? = null
-    private lateinit var reminderAdapter: ReminderAdapter
+    private lateinit var dueReminderAdapter: DueReminderAdapter
     private var listViewItems: ListView? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +41,8 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
         this.listViewItems = findViewById<View>(R.id.listViewReminder) as ListView
         this.databaseReference = FirebaseDatabase.getInstance().reference
         this.reminderList = mutableListOf()
-        this.reminderAdapter = ReminderAdapter(this, this.reminderList!!)
-        this.listViewItems!!.adapter = this.reminderAdapter
+        this.dueReminderAdapter = DueReminderAdapter(this, this.reminderList!!)
+        this.listViewItems!!.adapter = this.dueReminderAdapter
         this.databaseReference.orderByKey().addListenerForSingleValueEvent(itemListener)
 
         // Drop list /PopUp menu for Settings and logout choices
@@ -69,101 +70,17 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
 
         // Add new reminder, set title, date and time and the add new item to listView
         addButton.setOnClickListener {
-            this.setReminder()
+            val editReminder = Intent( this, EditReminder::class.java)
+            startActivity(editReminder)
+            //this.setReminder()
         }
 
     }
 
 
-    @SuppressLint("SimpleDateFormat")
-    private fun setReminder(){
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("Give a name for reminder")
-        val view = layoutInflater.inflate(R.layout.name_reminder, null)
-        builder.setView(view)
-        val etNameReminder: EditText = view.findViewById(R.id.etNameReminder)
-
-        builder.setPositiveButton("Ok") { _, _ ->
-            remainderName = etNameReminder.text.trim().toString()
-            val cal = Calendar.getInstance()
-            val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-                cal.set(Calendar.YEAR, year)
-                cal.set(Calendar.MONTH, month)
-                cal.set(Calendar.DAY_OF_MONTH, day)
-                date = SimpleDateFormat("dd.MM.yyyy", Locale.US).format(cal.time).toString()
-
-                val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-                    cal.set(Calendar.HOUR_OF_DAY, hour)
-                    cal.set(Calendar.MINUTE, minute)
-                    time = SimpleDateFormat("HH:mm", Locale.US).format(cal.time).toString()
-
-                    // Create Reminder and add attribute information
-                    val reminderItem = Reminder.create()
-                    reminderItem.message = remainderName
-                    reminderItem.reminder_time = date.plus(" ").plus(time)
-                    reminderItem.creator_id = auth!!.uid
-                    val sdf = SimpleDateFormat("dd.M.yyyy hh:mm")
-                    val currentDate = sdf.format(Date())
-                    reminderItem.creation_time = currentDate
-                    val newItem = this.databaseReference.child(Constants.FIREBASE_ITEM).push()
-                    reminderItem.object_id = newItem.key
-                    newItem.setValue(reminderItem)
-                    this.databaseReference.orderByKey().addListenerForSingleValueEvent(this.itemListener)
-
-                }
-                TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
-
-            }
-            DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
-        }
-
-        builder.setNeutralButton("Cancel") { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        val alertDialog: AlertDialog = builder.create()
-        alertDialog.show()
-
-    }
-
-    // Modify reminder and update modification to firebase and user view
+    // It does not need anymore in the main page side, but the main page utilises
+    // the same rowlistener as in edit reminder activity, so the function is the only placeholder
     override fun modifyReminder(itemObjectId: String) {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("Give a name for reminder")
-        val view = layoutInflater.inflate(R.layout.name_reminder, null)
-        builder.setView(view)
-        val etNameReminder: EditText = view.findViewById(R.id.etNameReminder)
-
-        builder.setPositiveButton("Ok") { _, _ ->
-            remainderName = etNameReminder.text.trim().toString()
-            val cal = Calendar.getInstance()
-            val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-                cal.set(Calendar.YEAR, year)
-                cal.set(Calendar.MONTH, month)
-                cal.set(Calendar.DAY_OF_MONTH, day)
-                date = SimpleDateFormat("dd.MM.yyyy", Locale.US).format(cal.time).toString()
-
-                val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-                    cal.set(Calendar.HOUR_OF_DAY, hour)
-                    cal.set(Calendar.MINUTE, minute)
-                    time = SimpleDateFormat("HH:mm", Locale.US).format(cal.time).toString()
-
-                    // Update reminder and add attribute information
-                    val itemReference = this.getDatabaseReference(itemObjectId)
-                    itemReference.child("message").setValue(remainderName)
-                    itemReference.child("reminder_time").setValue(date.plus(" ").plus(time))
-                }
-                TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
-
-            }
-            DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
-        }
-        builder.setNeutralButton("Cancel") { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        val alertDialog: AlertDialog = builder.create()
-        alertDialog.show()
 
     }
 
@@ -226,8 +143,8 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
                 reminder.location_x = map["location_x"] as String?
                 reminder.location_y = map["location_y"] as String?
 
-                // Return only the items which belongs to the current user
-                if (reminder.creator_id == auth!!.uid) {
+                // Return only the items which belongs to the current user and reminder time due
+                if (reminder.creator_id == auth!!.uid && reminder.reminder_seen == true) {
                     reminderList!!.add(reminder)
                 }
 
@@ -238,7 +155,7 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
         }
 
         // Alert adapter that data has changed
-        this.reminderAdapter.notifyDataSetChanged()
+        this.dueReminderAdapter.notifyDataSetChanged()
     }
 
     private fun getDatabaseReference(itemObjectId: String): DatabaseReference {
@@ -253,6 +170,14 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
         this.databaseReference.removeEventListener(this.itemListener)
         super.onDestroy()
     }
+
+    private fun calculateDelay( reminderTime: Calendar): Long {
+        val diff = reminderTime.timeInMillis - Calendar.getInstance().timeInMillis
+        val diffMinutes = diff / (60 * 1000)
+        return diffMinutes
+    }
+
+
 
 
 

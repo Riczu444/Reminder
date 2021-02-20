@@ -11,7 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Reminder">
-        <activity android:name=".SettingActivity"></activity>
+        <activity
+            android:name=".EditReminder"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".SettingActivity" />
         <activity
             android:name=".MainPage"
             android:windowSoftInputMode="adjustPan" />

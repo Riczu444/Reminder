@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+
+    <ImageButton
+        android:id="@+id/ib_remove_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        android:background="@android:color/transparent"
+        android:gravity="end"
+        android:tint="#DC7B8D"
+        app:srcCompat="@android:drawable/btn_dialog" />
+
+
+    <TextView
+        android:id="@+id/tv_reminder_date"
+        android:layout_width="138dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="22dp"
+        android:layout_toStartOf="@+id/ib_remove_reminder"
+        android:gravity="center"
+        android:text="Reminder date"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_reminder_name"
+        android:layout_width="171dp"
+        android:layout_height="87dp"
+        android:layout_marginEnd="15dp"
+        android:gravity="center"
+        android:layout_toStartOf="@+id/tv_reminder_date"
+        android:text="Reminder name"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+
+</RelativeLayout>
