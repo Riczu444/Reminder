@@ -13,8 +13,8 @@ class Reminder {
     var  reminder_seen: Boolean? = false
     var  creation_time: String? = "None"
     var  creator_id: String? = "None"
-    var  location_x: String? = "None"
-    var  location_y: String? = "None"
+    var  location_x: Double = 0.0
+    var  location_y: Double = 0.0
 }
 
 

@@ -19,5 +19,6 @@
     <string name="confirm_new_password">Confirm new password</string>
     <string name="save">Save</string>
     <string name="back">Back</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

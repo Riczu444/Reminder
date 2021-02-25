@@ -72,6 +72,8 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
         addButton.setOnClickListener {
             val editReminder = Intent( this, EditReminder::class.java)
             startActivity(editReminder)
+            //val mapReminder = Intent( this, MapsActivity::class.java)
+            //startActivity(mapReminder)
             //this.setReminder()
         }
 
@@ -140,8 +142,8 @@ class MainPage : AppCompatActivity(), ReminderRowListener {
                 reminder.creator_id = map["creator_id"] as String?
                 reminder.reminder_seen = map["reminder_seen"] as Boolean?
                 reminder.creation_time = map["creation_time"] as String?
-                reminder.location_x = map["location_x"] as String?
-                reminder.location_y = map["location_y"] as String?
+                //reminder.location_x = map["location_x"] as Double
+                //reminder.location_y = map["location_y"] as Double
 
                 // Return only the items which belongs to the current user and reminder time due
                 if (reminder.creator_id == auth!!.uid && reminder.reminder_seen == true) {

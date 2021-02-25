@@ -67,43 +67,87 @@ class EditReminder : AppCompatActivity(),  ReminderRowListener {
         builder.setView(view)
         val etNameReminder: EditText = view.findViewById(R.id.etNameReminder)
 
-        builder.setPositiveButton("Ok") { _, _ ->
+        builder.setPositiveButton("Ok") { dialog, _ ->
+
+
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setTitle("Choose Reminder type")
+            val view = layoutInflater.inflate(R.layout.reminder_type, null)
+            builder.setView(view)
             remainderName = etNameReminder.text.trim().toString()
-            val cal = Calendar.getInstance()
-            val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-                cal.set(Calendar.YEAR, year)
-                cal.set(Calendar.MONTH, month)
-                cal.set(Calendar.DAY_OF_MONTH, day)
-                date = SimpleDateFormat("dd.MM.yyyy", Locale.US).format(cal.time).toString()
 
-                val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-                    cal.set(Calendar.HOUR_OF_DAY, hour)
-                    cal.set(Calendar.MINUTE, minute)
-                    time = SimpleDateFormat("HH:mm", Locale.US).format(cal.time).toString()
+            val btnBasicReminder: Button = view.findViewById(R.id.btnBasicReminder)
+            val btnTimeBasedReminder: Button = view.findViewById(R.id.btnTimeBasedReminder)
+            val btnLocationBasedReminder: Button = view.findViewById(R.id.btnLocationBasedReminder)
 
-                    // Create Reminder and add attribute information
-                    val reminderItem = Reminder.create()
-                    reminderItem.message = remainderName
-                    reminderItem.reminder_time = date.plus(" ").plus(time)
-                    reminderItem.creator_id = auth!!.uid
-                    val sdf = SimpleDateFormat("dd.M.yyyy hh:mm")
-                    val currentDate = sdf.format(Date())
-                    reminderItem.creation_time = currentDate
-                    val newItem = this.databaseReference.child(Constants.FIREBASE_ITEM).push()
-                    reminderItem.object_id = newItem.key
-                    newItem.setValue(reminderItem)
-                    this.databaseReference.orderByKey().addListenerForSingleValueEvent(this.itemListener)
-                    val reminderData: Data = workDataOf(
-                            "title" to getString(R.string.app_name),
-                            "description" to remainderName,
-                            "reminder_object_id" to reminderItem.object_id)
-                    val request = OneTimeWorkRequestBuilder<NotifyWorker>().setInitialDelay(calculateDelay(cal), TimeUnit.MINUTES).setInputData(reminderData).build()
-                    WorkManager.getInstance(this).enqueue(request)
-                }
-                TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
 
+            builder.setNeutralButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
             }
-            DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.show()
+
+            btnBasicReminder.setOnClickListener {
+                val reminderItem = Reminder.create()
+                reminderItem.message = remainderName
+                reminderItem.reminder_time = date.plus(" ").plus(time)
+                reminderItem.creator_id = auth!!.uid
+                val sdf = SimpleDateFormat("dd.M.yyyy hh:mm")
+                val currentDate = sdf.format(Date())
+                reminderItem.creation_time = currentDate
+                val newItem = this.databaseReference.child(Constants.FIREBASE_ITEM).push()
+                reminderItem.object_id = newItem.key
+                newItem.setValue(reminderItem)
+                this.databaseReference.orderByKey().addListenerForSingleValueEvent(this.itemListener)
+                alertDialog.dismiss()
+            }
+
+            btnTimeBasedReminder.setOnClickListener {
+
+                val cal = Calendar.getInstance()
+                val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+                    cal.set(Calendar.YEAR, year)
+                    cal.set(Calendar.MONTH, month)
+                    cal.set(Calendar.DAY_OF_MONTH, day)
+                    date = SimpleDateFormat("dd.MM.yyyy", Locale.US).format(cal.time).toString()
+
+                    val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+                        cal.set(Calendar.HOUR_OF_DAY, hour)
+                        cal.set(Calendar.MINUTE, minute)
+                        time = SimpleDateFormat("HH:mm", Locale.US).format(cal.time).toString()
+
+                        // Create Reminder and add attribute information
+                        val reminderItem = Reminder.create()
+                        reminderItem.message = remainderName
+                        reminderItem.reminder_time = date.plus(" ").plus(time)
+                        reminderItem.creator_id = auth!!.uid
+                        val sdf = SimpleDateFormat("dd.M.yyyy hh:mm")
+                        val currentDate = sdf.format(Date())
+                        reminderItem.creation_time = currentDate
+                        val newItem = this.databaseReference.child(Constants.FIREBASE_ITEM).push()
+                        reminderItem.object_id = newItem.key
+                        newItem.setValue(reminderItem)
+                        this.databaseReference.orderByKey().addListenerForSingleValueEvent(this.itemListener)
+                        val reminderData: Data = workDataOf(
+                                "title" to getString(R.string.app_name),
+                                "description" to remainderName,
+                                "reminder_object_id" to reminderItem.object_id)
+                        val request = OneTimeWorkRequestBuilder<NotifyWorker>().setInitialDelay(calculateDelay(cal), TimeUnit.MINUTES).setInputData(reminderData).build()
+                        WorkManager.getInstance(this).enqueue(request)
+                        alertDialog.dismiss()
+                    }
+                    TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
+
+                }
+                DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+            }
+
+            btnLocationBasedReminder.setOnClickListener {
+                val mapReminder = Intent( this, MapsActivity::class.java)
+                startActivity(mapReminder)
+            }
+
         }
 
         builder.setNeutralButton("Cancel") { dialog, _ ->
@@ -197,8 +241,8 @@ class EditReminder : AppCompatActivity(),  ReminderRowListener {
                 reminder.creator_id = map["creator_id"] as String?
                 reminder.reminder_seen = map["reminder_seen"] as Boolean?
                 reminder.creation_time = map["creation_time"] as String?
-                reminder.location_x = map["location_x"] as String?
-                reminder.location_y = map["location_y"] as String?
+                //reminder.location_x = map["location_x"] as Double
+                //reminder.location_y = map["location_y"] as Double
 
                 // Return only the items which belongs to the current user
                 if (reminder.creator_id == auth!!.uid) {

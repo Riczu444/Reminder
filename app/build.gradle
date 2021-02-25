@@ -37,9 +37,9 @@ android {
 dependencies {
     implementation 'androidx.work:work-runtime:2.3.4'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     def room_version="2.2.6"
 
-    implementation platform('com.google.firebase:firebase-bom:26.3.0')
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation "androidx.work:work-runtime-ktx:2.3.4"
     implementation 'androidx.core:core-ktx:1.3.2'
@@ -54,6 +54,18 @@ dependencies {
     //implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha01"
     //implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha01"
     //implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-alpha01"
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.android.gms:play-services-auth:16.0.0'
+    implementation 'com.google.android.gms:play-services-gcm:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:26.5.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-database-ktx'
+
+
 
 
     implementation "androidx.room:room-runtime:$room_version"
