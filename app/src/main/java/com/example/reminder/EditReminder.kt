@@ -26,7 +26,6 @@ class EditReminder : AppCompatActivity(),  ReminderRowListener {
     private var auth = FirebaseAuth.getInstance().currentUser
     private var time = ""
     private var date = ""
-    private var remainderName = ""
 
     private lateinit var databaseReference: DatabaseReference
     private var reminderList: MutableList<Reminder>? = null
@@ -61,37 +60,38 @@ class EditReminder : AppCompatActivity(),  ReminderRowListener {
 
     @SuppressLint("SimpleDateFormat")
     private fun setReminder(){
+
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("Give a name for reminder")
-        val view = layoutInflater.inflate(R.layout.name_reminder, null)
+        builder.setTitle("Choose Reminder type")
+        val view = layoutInflater.inflate(R.layout.reminder_type, null)
         builder.setView(view)
-        val etNameReminder: EditText = view.findViewById(R.id.etNameReminder)
-
-        builder.setPositiveButton("Ok") { dialog, _ ->
 
 
+        val btnBasicReminder: Button = view.findViewById(R.id.btnBasicReminder)
+        val btnTimeBasedReminder: Button = view.findViewById(R.id.btnTimeBasedReminder)
+        val btnLocationBasedReminder: Button = view.findViewById(R.id.btnLocationBasedReminder)
+
+
+        builder.setNeutralButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
+
+        btnBasicReminder.setOnClickListener {
             val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-            builder.setTitle("Choose Reminder type")
-            val view = layoutInflater.inflate(R.layout.reminder_type, null)
+            builder.setTitle("Give a name for reminder")
+            val view = layoutInflater.inflate(R.layout.name_reminder, null)
             builder.setView(view)
-            remainderName = etNameReminder.text.trim().toString()
+            val etNameReminder: EditText = view.findViewById(R.id.etNameReminder)
 
-            val btnBasicReminder: Button = view.findViewById(R.id.btnBasicReminder)
-            val btnTimeBasedReminder: Button = view.findViewById(R.id.btnTimeBasedReminder)
-            val btnLocationBasedReminder: Button = view.findViewById(R.id.btnLocationBasedReminder)
-
-
-            builder.setNeutralButton("Cancel") { dialog, _ ->
+            builder.setPositiveButton("Ok") { dialog, _ ->
                 dialog.dismiss()
-            }
-
-            val alertDialog: AlertDialog = builder.create()
-            alertDialog.show()
-
-            btnBasicReminder.setOnClickListener {
                 val reminderItem = Reminder.create()
-                reminderItem.message = remainderName
-                reminderItem.reminder_time = date.plus(" ").plus(time)
+                reminderItem.message = etNameReminder.text.trim().toString()
+                reminderItem.reminder_time = "Basic Reminder"
+                reminderItem.reminder_seen = true
                 reminderItem.creator_id = auth!!.uid
                 val sdf = SimpleDateFormat("dd.M.yyyy hh:mm")
                 val currentDate = sdf.format(Date())
@@ -103,8 +103,24 @@ class EditReminder : AppCompatActivity(),  ReminderRowListener {
                 alertDialog.dismiss()
             }
 
-            btnTimeBasedReminder.setOnClickListener {
+            builder.setNeutralButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
 
+            }
+
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.show()
+        }
+
+        btnTimeBasedReminder.setOnClickListener {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setTitle("Give a name for reminder")
+            val view = layoutInflater.inflate(R.layout.name_reminder, null)
+            builder.setView(view)
+            val etNameReminder: EditText = view.findViewById(R.id.etNameReminder)
+
+            builder.setPositiveButton("Ok") { dialog, _ ->
+                dialog.dismiss()
                 val cal = Calendar.getInstance()
                 val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
                     cal.set(Calendar.YEAR, year)
@@ -119,7 +135,7 @@ class EditReminder : AppCompatActivity(),  ReminderRowListener {
 
                         // Create Reminder and add attribute information
                         val reminderItem = Reminder.create()
-                        reminderItem.message = remainderName
+                        reminderItem.message = etNameReminder.text.trim().toString()
                         reminderItem.reminder_time = date.plus(" ").plus(time)
                         reminderItem.creator_id = auth!!.uid
                         val sdf = SimpleDateFormat("dd.M.yyyy hh:mm")
@@ -131,7 +147,7 @@ class EditReminder : AppCompatActivity(),  ReminderRowListener {
                         this.databaseReference.orderByKey().addListenerForSingleValueEvent(this.itemListener)
                         val reminderData: Data = workDataOf(
                                 "title" to getString(R.string.app_name),
-                                "description" to remainderName,
+                                "description" to etNameReminder.text.trim().toString(),
                                 "reminder_object_id" to reminderItem.object_id)
                         val request = OneTimeWorkRequestBuilder<NotifyWorker>().setInitialDelay(calculateDelay(cal), TimeUnit.MINUTES).setInputData(reminderData).build()
                         WorkManager.getInstance(this).enqueue(request)
@@ -143,32 +159,35 @@ class EditReminder : AppCompatActivity(),  ReminderRowListener {
                 DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
             }
 
-            btnLocationBasedReminder.setOnClickListener {
-                val mapReminder = Intent( this, MapsActivity::class.java)
-                startActivity(mapReminder)
+            builder.setNeutralButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+
             }
 
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.show()
         }
 
-        builder.setNeutralButton("Cancel") { dialog, _ ->
-            dialog.dismiss()
+        btnLocationBasedReminder.setOnClickListener {
+            val mapReminder = Intent( this, MapsActivity::class.java)
+            startActivity(mapReminder)
         }
 
-        val alertDialog: AlertDialog = builder.create()
-        alertDialog.show()
+
 
     }
 
-    // Modify reminder and update modification to firebase and user view
+    // Modify reminder and update modification to firebase and user view (This was for Homework 2 and 3)
     override fun modifyReminder(itemObjectId: String) {
+
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Give a name for reminder")
         val view = layoutInflater.inflate(R.layout.name_reminder, null)
         builder.setView(view)
         val etNameReminder: EditText = view.findViewById(R.id.etNameReminder)
 
-        builder.setPositiveButton("Ok") { _, _ ->
-            remainderName = etNameReminder.text.trim().toString()
+        builder.setPositiveButton("Ok") { dialog, _ ->
+            dialog.dismiss()
             val cal = Calendar.getInstance()
             val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
                 cal.set(Calendar.YEAR, year)
@@ -183,7 +202,7 @@ class EditReminder : AppCompatActivity(),  ReminderRowListener {
 
                     // Update reminder and add attribute information
                     val itemReference = this.getDatabaseReference(itemObjectId)
-                    itemReference.child("message").setValue(remainderName)
+                    itemReference.child("message").setValue(etNameReminder.text.trim().toString())
                     itemReference.child("reminder_time").setValue(date.plus(" ").plus(time))
                 }
                 TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()

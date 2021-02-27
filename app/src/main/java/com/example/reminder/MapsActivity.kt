@@ -23,8 +23,6 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.tasks.CancellationToken
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -32,14 +30,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random
 
-const val GEOFENCE_RADIUS = 200
-const val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
-const val GEOFENCE_EXPIRATION = 10 * 24 * 60 * 60 * 1000 // 10 days
-const val GEOFENCE_DWELL_DELAY =  10 * 1000 // 10 secs // 2 minutes
-const val GEOFENCE_LOCATION_REQUEST_CODE = 12345
-const val CAMERA_ZOOM_LEVEL = 13f
-const val LOCATION_REQUEST_CODE = 123
-private val TAG: String = MapsActivity::class.java.simpleName
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -77,7 +67,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             ActivityCompat.requestPermissions(
                 this,
                 permissions.toTypedArray(),
-                LOCATION_REQUEST_CODE
+                Constants.LOCATION_REQUEST_CODE
             )
         } else {
 
@@ -89,13 +79,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return
             }
             this.map.isMyLocationEnabled = true
@@ -105,14 +88,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (it != null) {
                     with(map) {
                         val latLng = LatLng(it.latitude, it.longitude)
-                        moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, CAMERA_ZOOM_LEVEL))
+                        moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, Constants.CAMERA_ZOOM_LEVEL))
                     }
                 } else {
                     with(map) {
                         moveCamera(
                             CameraUpdateFactory.newLatLngZoom(
                                 LatLng(65.01355297927051, 25.464019811372978),
-                                CAMERA_ZOOM_LEVEL
+                                    Constants.CAMERA_ZOOM_LEVEL
                             )
                         )
                     }
@@ -136,9 +119,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     .center(latlng)
                     .strokeColor(Color.argb(50, 70, 70, 70))
                     .fillColor(Color.argb(70, 150, 150, 150))
-                    .radius(GEOFENCE_RADIUS.toDouble())
+                    .radius(Constants.GEOFENCE_RADIUS.toDouble())
             )
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, CAMERA_ZOOM_LEVEL))
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, Constants.CAMERA_ZOOM_LEVEL))
 
             val builder: AlertDialog.Builder = AlertDialog.Builder(this)
             builder.setTitle("Give a name for reminder")
@@ -165,16 +148,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     reminderItem.object_id = key
                     reference.child(key).setValue(reminderItem)
                     createGeoFence(latlng, key!!, reminderItem.message!!, geofencingClient)
-                    val mainPage = Intent( this, MainPage::class.java)
-                    startActivity(mainPage)
+                    val editPage = Intent( this, EditReminder::class.java)
+                    startActivity(editPage)
 
                 }
             }
 
             builder.setNegativeButton("Discard"){dialog, _ ->
                 dialog.dismiss()
-                val mainPage = Intent( this, MainPage::class.java)
-                startActivity(mainPage)
+                val editPage = Intent( this, EditReminder::class.java)
+                startActivity(editPage)
             }
 
             builder.setNeutralButton("Cancel") { dialog, _ ->
@@ -184,24 +167,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val alertDialog: AlertDialog = builder.create()
             alertDialog.show()
 
-            //val database = Firebase.database
-            //val reference = database.getReference(Constants.FIREBASE_ITEM)
-            //val key = reference.push().key
-            // if (key != null) {
-            //    val reminder = Reminder_2(key, latlng.latitude, latlng.longitude)
-            //    reference.child(key).setValue(reminder)
-            //}
-
         }
     }
 
     private fun createGeoFence(location: LatLng, key: String, message: String, geofencingClient: GeofencingClient) {
         val geofence = Geofence.Builder()
-            .setRequestId(GEOFENCE_ID)
-            .setCircularRegion(location.latitude, location.longitude, GEOFENCE_RADIUS.toFloat())
-            .setExpirationDuration(GEOFENCE_EXPIRATION.toLong())
+            .setRequestId(Constants.GEOFENCE_ID)
+            .setCircularRegion(location.latitude, location.longitude, Constants.GEOFENCE_RADIUS.toFloat())
+            .setExpirationDuration(Constants.GEOFENCE_EXPIRATION.toLong())
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL)
-            .setLoiteringDelay(GEOFENCE_DWELL_DELAY)
+            .setLoiteringDelay(Constants.GEOFENCE_DWELL_DELAY)
             .build()
 
         val geofenceRequest = GeofencingRequest.Builder()
@@ -226,7 +201,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     arrayOf(
                         Manifest.permission.ACCESS_BACKGROUND_LOCATION
                     ),
-                    GEOFENCE_LOCATION_REQUEST_CODE
+                    Constants.GEOFENCE_LOCATION_REQUEST_CODE
                 )
             } else {
                 geofencingClient.addGeofences(geofenceRequest, pendingIntent)
@@ -249,7 +224,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == GEOFENCE_LOCATION_REQUEST_CODE) {
+        if (requestCode == Constants.GEOFENCE_LOCATION_REQUEST_CODE) {
             if (permissions.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(
                     this,
@@ -258,7 +233,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 ).show()
             }
         }
-        if (requestCode == LOCATION_REQUEST_CODE) {
+        if (requestCode == Constants.LOCATION_REQUEST_CODE) {
             if (
                 grantResults.isNotEmpty() && (
                         grantResults[0] == PackageManager.PERMISSION_GRANTED ||

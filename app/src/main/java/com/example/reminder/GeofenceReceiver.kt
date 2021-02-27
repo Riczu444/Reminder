@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
-import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.FirebaseApp
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
@@ -50,7 +48,6 @@ class GeofenceReceiver : BroadcastReceiver() {
                     }
 
                 }
-
 
                 val child = reference.child(key)
                 child.addValueEventListener(reminderListener)
